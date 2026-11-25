@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="ka" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ალადინი — ინტერაქტიული საკითხავი (II–IV კლასები)</title>
+
+  <!-- Google Fonts: ქართული მკაფიო შრიფტები -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700;800&family=Noto+Serif+Georgian:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            night: '#1A1B41',
+            nightLight: '#282A5E',
+            gold: '#D99B26',
+            goldBright: '#F3B61F',
+            turquoise: '#008B8B',
+            turquoiseDark: '#006666',
+            parchment: '#FDFBF7',
+            parchmentWarm: '#F6F0E2',
+            ink: '#1E2029'
+          },
+          fontFamily: {
+            sans: ['"Noto Sans Georgian"', 'sans-serif'],
+            serif: ['"Noto Serif Georgian"', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* საბაზისო და ხელმისაწვდომობის სტილები */
+    body {
+      background-color: #F4EFE4;
+      color: #1E2029;
+      font-family: "Noto Sans Georgian", sans-serif;
+    }
+
+    /* მკაფიო ფოკუსის ჩარჩო კლავიატურით ნავიგაციისთვის */
+    *:focus-visible {
+      outline: 3px solid #F3B61F;
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+
+    /* ზღაპრის ტექსტში გამოყოფილი ინტერაქტიული სიტყვები */
+    .vocab-word {
+      background-color: rgba(0, 139, 139, 0.12);
+      border-bottom: 2px dashed #008B8B;
+      color: #005C5C;
+      font-weight: 600;
+      padding: 0 4px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .vocab-word:hover,
+    .vocab-word:focus-visible {
+      background-color: #008B8B;
+      color: #FFFFFF;
+    }
+
+    /* აღმოსავლური ორნამენტული ფონი Hero სექციისთვის */
+    .arabesque-bg {
+      background-color: #1A1B41;
+      background-image:
+        radial-gradient(circle at 15% 20%, rgba(243, 182, 31, 0.14) 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(0, 139, 139, 0.22) 0%, transparent 50%);
+    }
+
+    /* გადათრევის ბარათების სტილი */
+    .order-card.dragging {
+      opacity: 0.55;
+      border-color: #D99B26;
+      background-color: #FFF9EB;
+    }
+
+    /* მოძრაობის შემცირების მხარდაჭერა */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-goldBright selection:text-night">
+
+  <!-- სწრაფი გადასვლა მთავარ შინაარსზე (ეკრანის წამკითხველებისა და კლავიატურისთვის) -->
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-goldBright focus:text-night focus:font-bold focus:px-4 focus:py-2 focus:rounded-xl shadow-lg">
+    გადასვლა მთავარ შინაარსზე
+  </a>
+
+  <!-- ზედა პანელი (Header) -->
+  <header class="sticky top-0 z-40 bg-night text-white shadow-lg border-b-2 border-gold/40">
+    <div class="max-w-6xl mx-auto px-4 py-3">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <!-- ლოგო და სათაური -->
+        <a href="#hero" class="flex items-center gap-3 group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-goldBright to-gold flex items-center justify-center text-night shadow-md shrink-0" aria-hidden="true">
+            <!-- მინი ჯადოსნური ლამპრის SVG აიკონი -->
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C11.2 3.5 10.5 4.8 11.5 6C12.2 6.8 11.8 7.8 11.2 8.5C12.8 8 13.5 6.5 12.6 5.2C11.9 4.2 12.2 3 12 2ZM4 14C2.9 14 2 14.9 2 16C2 17.1 2.9 18 4 18H6.2C7.4 19.8 9.5 21 12 21C14.8 21 17.2 19.4 18.3 17H21L22 14H18.5C17.6 11.6 15.1 10 12 10C8.9 10 6.4 11.6 5.5 14H4ZM4 15.5H5.2C5.1 15.8 5.1 16.2 5.2 16.5H4C3.7 16.5 3.5 16.3 3.5 16C3.5 15.7 3.7 15.5 4 15.5Z"/>
+            </svg>
+          </div>
+          <div>
+            <span class="block font-extrabold text-base sm:text-lg tracking-wide text-goldBright leading-tight">
+              ალადინი
+            </span>
+            <span class="block text-xs text-slate-200">
+              ინტერაქტიული საკითხავი • II–IV კლასები
+            </span>
+          </div>
+        </a>
+
+        <!-- ქულების / ვარსკვლავების მთვლელი -->
+        <div class="flex items-center gap-3">
+          <div class="bg-nightLight border border-gold/50 rounded-2xl px-3.5 py-1.5 flex items-center gap-2 shadow-inner" aria-live="polite">
+            <span class="text-goldBright text-lg" aria-hidden="true">★</span>
+            <div class="text-xs sm:text-sm">
+              <span class="text-slate-300">ქულები:</span>
+              <strong id="total-score" class="text-goldBright font-extrabold text-base ml-1">0</strong>
+              <span class="text-slate-400">/ 100</span>
+            </div>
+          </div>
+
+          <!-- მობილური მენიუს ღილაკი -->
+          <button id="mobile-menu-btn" type="button" aria-expanded="false" aria-controls="main-nav" class="md:hidden p-2.5 rounded-xl bg-nightLight border border-white/20 text-white hover:bg-turquoise transition">
+            <span class="sr-only">მენიუს გახსნა</span>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ნავიგაციის ბმულები -->
+      <nav id="main-nav" aria-label="მთავარი ნავიგაცია" class="hidden md:flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mt-3 pt-2.5 border-t border-white/10">
+        <a href="#hero" class="nav-link px-3 py-2 rounded-xl text-sm font-semibold hover:bg-nightLight hover:text-goldBright transition">მთავარი</a>
+        <a href="#story-section" class="nav-link px-3 py-2 rounded-xl text-sm font-semibold hover:bg-nightLight hover:text-goldBright transition">ზღაპარი</a>
+        <a href="#vocabulary-section" class="nav-link px-3 py-2 rounded-xl text-sm font-semibold hover:bg-nightLight hover:text-goldBright transition">ლექსიკონი</a>
+        <a href="#quiz-section" class="nav-link px-3 py-2 rounded-xl text-sm font-semibold hover:bg-nightLight hover:text-goldBright transition">კითხვები</a>
+        <a href="#game-section" class="nav-link px-3 py-2 rounded-xl text-sm font-semibold hover:bg-nightLight hover:text-goldBright transition">თამაში</a>
+        <a href="#creativity-section" class="nav-link px-3 py-2 rounded-xl text-sm font-semibold hover:bg-nightLight hover:text-goldBright transition">შემოქმედება</a>
+      </nav>
+
+      <!-- პროგრესის ზოლი -->
+      <div class="mt-2.5">
+        <div class="flex justify-between text-[11px] text-slate-300 mb-1">
+          <span>სასწავლო პროგრესი</span>
+          <span id="progress-percent">0%</span>
+        </div>
+        <div class="w-full h-2 bg-nightLight rounded-full overflow-hidden" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="progress-bar-container">
+          <div id="progress-bar-fill" class="h-full bg-gradient-to-r from-turquoise to-goldBright transition-all duration-300" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <!-- მთავარი გვერდი (Hero სექცია) -->
+    <section id="hero" class="arabesque-bg text-white py-10 sm:py-16 px-4 border-b-4 border-gold">
+      <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- ტექსტური მხარე -->
+        <div class="lg:col-span-7 space-y-5">
+          <div class="inline-flex items-center gap-2 bg-turquoise/25 border border-turquoise text-teal-200 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold">
+            <span>აღმოსავლური ზღაპარი</span>
+            <span aria-hidden="true">•</span>
+            <span>სახელმძღვანელოს მიხედვით</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight text-white">
+            ალადინი და <span class="text-goldBright">ჯადოსნური ლამპარი</span>
+          </h1>
+
+          <p class="text-base sm:text-lg text-slate-200 leading-relaxed max-w-2xl">
+            გაიცანი ღარიბი, მაგრამ გულკეთილი ბიჭი ალადინი, რომელმაც გამოქვაბულში დამტვერილი ლამპარი იპოვა, ყოვლისშემძლე ჯინი გაათავისუფლა და მფრინავი ხალიჩით მეფის ასულ იასმინთან ერთად იმოგზაურა.
+          </p>
+
+          <!-- მთავარი მოქმედების ღილაკი -->
+          <div class="flex flex-wrap items-center gap-4 pt-2">
+            <a href="#story-section" class="inline-flex items-center justify-center gap-2.5 bg-goldBright hover:bg-gold text-night font-extrabold text-base sm:text-lg px-6 py-3.5 rounded-2xl shadow-lg transition transform hover:-translate-y-0.5">
+              <span>დაიწყე კითხვა</span>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+              </svg>
+            </a>
+            <a href="#quiz-section" class="inline-flex items-center justify-center gap-2 bg-nightLight hover:bg-white/15 border border-white/25 text-white font-semibold text-sm sm:text-base px-5 py-3.5 rounded-2xl transition">
+              <span>პირდაპირ კითხვებზე</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- მთავარი SVG ილუსტრაცია -->
+        <div class="lg:col-span-5 flex justify-center">
+          <div class="w-full max-w-sm bg-nightLight/80 border-2 border-gold/40 rounded-3xl p-5 shadow-2xl">
+            <svg viewBox="0 0 360 270" class="w-full h-auto rounded-2xl" role="img" aria-label="ჯადოსნური ოქროს ლამპარი, საიდანაც ცისფერი კვამლი და ვარსკვლავები ამოდის">
+              <defs>
+                <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#131433"/>
+                  <stop offset="100%" stop-color="#282A5E"/>
+                </linearGradient>
+                <linearGradient id="lampGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#FDE047"/>
+                  <stop offset="50%" stop-color="#F3B61F"/>
+                  <stop offset="100%" stop-color="#B45309"/>
+                </linearGradient>
+                <linearGradient id="smokeGrad" x1="0" y1="1" x2="0" y2="0">
+                  <stop offset="0%" stop-color="#008B8B" stop-opacity="0.9"/>
+                  <stop offset="100%" stop-color="#5EEAD4" stop-opacity="0.25"/>
+                </linearGradient>
+              </defs>
+              <!-- ფონი -->
+              <rect width="360" height="270" rx="18" fill="url(#skyGrad)"/>
+              <!-- მთვარე და ვარსკვლავები -->
+              <circle cx="295" cy="52" r="22" fill="#FDE047" opacity="0.9"/>
+              <circle cx="304" cy="46" r="19" fill="#17193B"/>
+              <circle cx="65" cy="45" r="3" fill="#FDE047"/>
+              <circle cx="115" cy="32" r="2.5" fill="#5EEAD4"/>
+              <circle cx="235" cy="38" r="3" fill="#FDE047"/>
+              <circle cx="52" cy="110" r="2" fill="#FFFFFF"/>
+              <circle cx="315" cy="115" r="2.5" fill="#5EEAD4"/>
+
+              <!-- ჯინის ცისფერი კვამლის ღრუბელი -->
+              <path d="M128 178 C115 150, 95 135, 110 105 C120 82, 155 85, 165 62 C175 40, 215 35, 232 58 C248 80, 225 112, 195 122 C165 132, 145 155, 134 178 Z" fill="url(#smokeGrad)"/>
+              <circle cx="195" cy="72" r="18" fill="#5EEAD4" opacity="0.45"/>
+              <circle cx="155" cy="105" r="14" fill="#2DD4BF" opacity="0.4"/>
+
+              <!-- ხალიჩა ქვემოთ -->
+              <path d="M45 232 L315 232 L292 206 L68 206 Z" fill="#7E22CE" stroke="#F3B61F" stroke-width="3"/>
+              <path d="M68 225 L292 225 L278 212 L82 212 Z" fill="#008B8B"/>
+
+              <!-- ჯადოსნური ლამპარი -->
+              <!-- სადგამი -->
+              <path d="M155 212 L215 212 L202 198 L168 198 Z" fill="url(#lampGrad)"/>
+              <!-- კორპუსი -->
+              <path d="M135 182 C135 162, 225 162, 225 182 C225 198, 200 202, 185 202 C165 202, 135 198, 135 182 Z" fill="url(#lampGrad)"/>
+              <!-- ცხვირი -->
+              <path d="M138 178 C115 174, 102 162, 96 155 C104 168, 118 184, 142 188 Z" fill="url(#lampGrad)"/>
+              <!-- სახელური -->
+              <path d="M222 174 C245 165, 252 188, 222 190" fill="none" stroke="#F3B61F" stroke-width="6" stroke-linecap="round"/>
+              <!-- თავსახური -->
+              <ellipse cx="182" cy="166" rx="18" ry="6" fill="#FDE047"/>
+              <circle cx="182" cy="158" r="5" fill="#F3B61F"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4-ნაბიჯიანი სარჩევი -->
+      <div class="max-w-6xl mx-auto mt-10 pt-8 border-t border-white/15">
+        <h2 class="sr-only">სასწავლო ნაბიჯები</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          <a href="#story-section" class="bg-nightLight/90 hover:bg-nightLight border border-white/15 hover:border-goldBright rounded-2xl p-4 flex items-center gap-3.5 transition">
+            <span class="w-9 h-9 rounded-xl bg-turquoise text-white font-extrabold flex items-center justify-center shrink-0">1</span>
+            <div>
+              <div class="font-bold text-white text-sm sm:text-base">წაიკითხე</div>
+              <div class="text-xs text-slate-300">ზღაპრის 3 ნაწილი</div>
+            </div>
+          </a>
+
+          <a href="#vocabulary-section" class="bg-nightLight/90 hover:bg-nightLight border border-white/15 hover:border-goldBright rounded-2xl p-4 flex items-center gap-3.5 transition">
+            <span class="w-9 h-9 rounded-xl bg-gold text-night font-extrabold flex items-center justify-center shrink-0">2</span>
+            <div>
+              <div class="font-bold text-white text-sm sm:text-base">ისწავლე სიტყვები</div>
+              <div class="text-xs text-slate-300">ახსნა და მაგალითები</div>
+            </div>
+          </a>
+
+          <a href="#quiz-section" class="bg-nightLight/90 hover:bg-nightLight border border-white/15 hover:border-goldBright rounded-2xl p-4 flex items-center gap-3.5 transition">
+            <span class="w-9 h-9 rounded-xl bg-turquoise text-white font-extrabold flex items-center justify-center shrink-0">3</span>
+            <div>
+              <div class="font-bold text-white text-sm sm:text-base">უპასუხე კითხვებს</div>
+              <div class="text-xs text-slate-300">5 სასკოლო კითხვა</div>
+            </div>
+          </a>
+
+          <a href="#game-section" class="bg-nightLight/90 hover:bg-nightLight border border-white/15 hover:border-goldBright rounded-2xl p-4 flex items-center gap-3.5 transition">
+            <span class="w-9 h-9 rounded-xl bg-gold text-night font-extrabold flex items-center justify-center shrink-0">4</span>
+            <div>
+              <div class="font-bold text-white text-sm sm:text-base">ითამაშე</div>
+              <div class="text-xs text-slate-300">დაალაგე ამბავი</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- სექცია 1: ზღაპარი „ალადინი“ -->
+    <section id="story-section" class="py-12 px-4 max-w-5xl mx-auto">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-turquoiseDark bg-turquoise/15 px-3 py-1 rounded-full">ნაბიჯი 1 • საკითხავი მასალა</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-night mt-2">ზღაპარი „ალადინი“</h2>
+          <p class="text-sm sm:text-base text-slate-700 mt-1">
+            დააწკაპუნე <span class="vocab-word">გამოყოფილ სიტყვებზე</span>, რომ გაიგო მათი მნიშვნელობა.
+          </p>
+        </div>
+
+        <!-- შრიფტის ზომის რეგულატორი -->
+        <div class="flex items-center gap-2 bg-parchment border border-gold/40 rounded-2xl p-2 shadow-sm self-start sm:self-auto" role="group" aria-label="ტექსტის ზომის შეცვლა">
+          <span class="text-xs font-semibold text-slate-600 px-2">შრიფტი:</span>
+          <button type="button" id="font-decrease" class="px-3 py-1.5 rounded-xl bg-parchmentWarm hover:bg-gold/20 text-night font-bold text-sm transition" aria-label="შრიფტის შემცირება">A-</button>
+          <button type="button" id="font-reset" class="px-3 py-1.5 rounded-xl bg-parchmentWarm hover:bg-gold/20 text-night font-bold text-sm transition" aria-label="სტანდარტული შრიფტი">A</button>
+          <button type="button" id="font-increase" class="px-3 py-1.5 rounded-xl bg-parchmentWarm hover:bg-gold/20 text-night font-bold text-sm transition" aria-label="შრიფტის გაზრდა">A+</button>
+        </div>
+      </div>
+
+      <!-- ინტერაქტიული სიტყვის განმარტების ამომხტომი ბარათი (Live Region) -->
+      <div id="word-popup-box" class="hidden mb-6 bg-night text-white rounded-2xl p-4 sm:p-5 border-2 border-goldBright shadow-xl" role="region" aria-live="polite">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <span class="text-xs uppercase tracking-wider text-goldBright font-bold">სიტყვის განმარტება</span>
+            <h3 id="popup-word-title" class="text-xl font-extrabold text-white mt-0.5"></h3>
+            <p id="popup-word-meaning" class="text-slate-200 text-sm sm:text-base mt-1"></p>
+            <p id="popup-word-example" class="text-teal-200 text-xs sm:text-sm italic mt-2 bg-nightLight/80 p-2.5 rounded-xl border border-turquoise/40"></p>
+          </div>
+          <button type="button" id="close-word-popup" class="p-2 rounded-xl bg-nightLight hover:bg-white/20 text-white shrink-0" aria-label="განმარტების დახურვა">✕</button>
+        </div>
+      </div>
+
+      <!-- ეპიზოდების ჩანართები (Tabs) მარტივი გადართვისთვის -->
+      <div class="flex flex-wrap gap-2 mb-6" role="tablist" aria-label="ზღაპრის ნაწილები">
+        <button type="button" role="tab" aria-selected="true" aria-controls="episode-1" id="tab-1" class="episode-tab flex-1 min-w-[160px] py-3 px-4 rounded-2xl font-bold text-sm sm:text-base border-2 border-night bg-night text-goldBright shadow-md transition">
+          ნაწილი 1: ლამპარი და ჯინი
+        </button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="episode-2" id="tab-2" class="episode-tab flex-1 min-w-[160px] py-3 px-4 rounded-2xl font-bold text-sm sm:text-base border-2 border-gold/40 bg-parchment text-night hover:border-night transition">
+          ნაწილი 2: პრინცი ალი
+        </button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="episode-3" id="tab-3" class="episode-tab flex-1 min-w-[160px] py-3 px-4 rounded-2xl font-bold text-sm sm:text-base border-2 border-gold/40 bg-parchment text-night hover:border-night transition">
+          ნაწილი 3: მფრინავი ხალიჩა
+        </button>
+      </div>
+
+      <!-- ზღაპრის კონტეინერი -->
+      <div id="story-reader-card" class="bg-parchment border-2 border-gold/50 rounded-3xl p-5 sm:p-8 shadow-xl">
+        
+        <!-- ნაწილი 1 -->
+        <article id="episode-1" role="tabpanel" aria-labelledby="tab-1" class="episode-panel space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center bg-parchmentWarm p-4 sm:p-5 rounded-2xl border border-gold/30">
+            <div class="md:col-span-4 flex justify-center">
+              <!-- SVG ილუსტრაცია 1: გამოქვაბული და ლამპარი -->
+              <svg viewBox="0 0 240 160" class="w-full max-w-[220px] h-auto rounded-xl" role="img" aria-label="გამოქვაბულში მანათობელი ჯადოსნური ლამპარი და ცისფერი კვამლი">
+                <rect width="240" height="160" rx="14" fill="#1A1B41"/>
+                <path d="M0 160 L0 45 Q120 -10 240 45 L240 160 Z" fill="#282A5E"/>
+                <ellipse cx="120" cy="142" rx="75" ry="12" fill="#131433"/>
+                <path d="M115 125 Q95 85 125 60 Q150 38 122 20 Q162 42 145 75 Q132 100 124 125 Z" fill="#008B8B" opacity="0.85"/>
+                <path d="M95 132 C95 118, 145 118, 145 132 C145 142, 132 145, 120 145 C108 145, 95 142, 95 132 Z" fill="#F3B61F"/>
+                <path d="M96 129 L74 118 L82 134 Z" fill="#F3B61F"/>
+                <circle cx="85" cy="52" r="3" fill="#FDE047"/>
+                <circle cx="165" cy="44" r="3" fill="#5EEAD4"/>
+                <circle cx="172" cy="88" r="2.5" fill="#FDE047"/>
+              </svg>
+            </div>
+            <div class="md:col-span-8">
+              <span class="text-xs font-bold text-turquoiseDark uppercase">ეპიზოდი 1 / 3</span>
+              <h3 class="text-xl sm:text-2xl font-extrabold text-night mt-1">ჯადოსნური ლამპარი და ჯინი</h3>
+              <p class="text-sm text-slate-700 mt-2">
+                ვინ არ იცნობს ალადინს — <button type="button" class="vocab-word" data-word="ღარიბი">ღარიბ</button>, გულკეთილ ბიჭს, რომელმაც მეფის ასულ იასმინის გული მოიგო და ორმოცი <button type="button" class="vocab-word" data-word="ყაჩაღი">ყაჩაღი</button> გააბრიყვა. ახლა კი ჯინის გათავისუფლების ამბავს წაიკითხავ.
+              </p>
+            </div>
+          </div>
+
+          <div class="story-text font-serif text-lg leading-relaxed text-ink space-y-4">
+            <p>
+              გამოქვაბულში ჩამწყვდეულმა ალადინმა დამტვერილ ლამპარს ხეხვა დაუწყო, რათა ზედ ამოტვიფრული წარწერა წაეკითხა. უცებ ლამპარი აძაგძაგდა, იქიდან კაშკაშა შუქი ამოიფრქვა, გამოქვაბული კვამლის ღრუბელმა დაფარა, რომელიც ჯერ დაბზრიალდა და მერე ცისფერ ლანდად გადაიქცა.
+            </p>
+            <p>
+              — უჰ, რა საშინელებაა ათასი წელი ასეთ <button type="button" class="vocab-word" data-word="სივიწროვე">სივიწროვეში</button> ყოფნა! — წარმოთქვა ლანდმა, როცა კვამლი გაიფანტა.
+            </p>
+            <p>
+              — შენ ვინ ხარ? — ჰკითხა ალადინმა.
+            </p>
+            <p>
+              — მე ამ ლამპრის ერთადერთი და უძლიერესი <button type="button" class="vocab-word" data-word="მკვიდრი">მკვიდრი</button> ვარ. შენ კი ჩემი ბედნიერი ბატონი. ჩაიფიქრე სამი ნატვრა, — არც მეტი, არც ნაკლები, — და შეგისრულებ.
+            </p>
+            <p>
+              — თუ ასეთი ძლევამოსილი ხარ, როგორც თავი მოგაქვს, იქნებ აქედან ამომიყვანო, — მიმართა ყმაწვილმა <button type="button" class="vocab-word" data-word="ნიშნის მოგებით">ნიშნის მოგებით</button>.
+            </p>
+            <p>
+              ... და მაშინვე ყველა მიწის ზემოთ აღმოჩნდა. მალე ხალიჩაზე მოკალათებული მეგობრები აგრაბაჰისკენ მიქროდნენ.
+            </p>
+          </div>
+
+          <div class="pt-4 border-t border-gold/30 flex flex-wrap items-center justify-between gap-3">
+            <button type="button" data-read-btn="1" class="mark-read-btn inline-flex items-center gap-2 bg-turquoise hover:bg-turquoiseDark text-white font-bold px-5 py-3 rounded-2xl shadow transition">
+              <span>წავიკითხე ეს ნაწილი (+10 ქულა)</span>
+            </button>
+            <button type="button" data-next-tab="tab-2" class="next-tab-btn inline-flex items-center gap-2 bg-night hover:bg-nightLight text-goldBright font-bold px-5 py-3 rounded-2xl transition">
+              <span>შემდეგი ნაწილი →</span>
+            </button>
+          </div>
+        </article>
+
+        <!-- ნაწილი 2 -->
+        <article id="episode-2" role="tabpanel" aria-labelledby="tab-2" class="episode-panel hidden space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center bg-parchmentWarm p-4 sm:p-5 rounded-2xl border border-gold/30">
+            <div class="md:col-span-4 flex justify-center">
+              <!-- SVG ილუსტრაცია 2: აგრაბაჰის სასახლე -->
+              <svg viewBox="0 0 240 160" class="w-full max-w-[220px] h-auto rounded-xl" role="img" aria-label="აგრაბაჰის ოქროსგუმბათოვანი სასახლე">
+                <rect width="240" height="160" rx="14" fill="#1A1B41"/>
+                <!-- მინარეთები -->
+                <rect x="35" y="55" width="14" height="90" fill="#F6F0E2"/>
+                <path d="M33 55 Q42 35 51 55 Z" fill="#F3B61F"/>
+                <rect x="191" y="55" width="14" height="90" fill="#F6F0E2"/>
+                <path d="M189 55 Q198 35 207 55 Z" fill="#F3B61F"/>
+                <!-- მთავარი სასახლე -->
+                <rect x="65" y="78" width="110" height="67" fill="#FDFBF7"/>
+                <path d="M85 78 C85 42, 155 42, 155 78 Z" fill="#F3B61F"/>
+                <line x1="120" y1="32" x2="120" y2="48" stroke="#FDE047" stroke-width="3"/>
+                <!-- თაღოვანი კარი -->
+                <path d="M105 145 L105 108 Q120 92 135 108 L135 145 Z" fill="#008B8B"/>
+                <rect x="20" y="145" width="200" height="15" fill="#D99B26"/>
+              </svg>
+            </div>
+            <div class="md:col-span-8">
+              <span class="text-xs font-bold text-turquoiseDark uppercase">ეპიზოდი 2 / 3</span>
+              <h3 class="text-xl sm:text-2xl font-extrabold text-night mt-1">პრინცი ალი აგრაბაჰში</h3>
+              <p class="text-sm text-slate-700 mt-2">
+                ალადინი პრინცად გადაიქცა და აგრაბაჰის სასახლეში იასმინის ხელის სათხოვნელად გაემართა.
+              </p>
+            </div>
+          </div>
+
+          <div class="story-text font-serif text-lg leading-relaxed text-ink space-y-4">
+            <p>
+              — ჩემს სამ სურვილთან დაკავშირებით რას ფიქრობ? — დაინტერესდა ალადინი.
+            </p>
+            <p>
+              — ჰმ, ერთი ხომ უკვე შეგისრულე! — უპასუხა ჯინმა.
+            </p>
+            <p>
+              — ასეც არ არის! — ეშმაკურად ჩაიცინა ყმაწვილმა. — ეს ჩემი სურვილი არ იყო. შენ ეს თავად გინდოდა და ამიტომ გააკეთე. იცი, ყველაზე ძალიან რა მინდა? — უთხრა, როცა <button type="button" class="vocab-word" data-word="თავშესაფარი">თავშესაფრამდე</button> მიაღწიეს, — პრინცი მინდა გავხდე და ცოლად იასმინი შევირთო.
+            </p>
+            <p>
+              იმავე წამს სულმა გადიდება დაიწყო. გადიდდა, გადიდდა... და ყმაწვილის გარშემო ყველაფერი დაბზრიალდა. ალადინი თავით ფეხებამდე <button type="button" class="vocab-word" data-word="გადასხვაფერდა">გადასხვაფერდა</button>.
+            </p>
+            <p>
+              — დიდებულად გამოიყურები! — მიმართა ჯინმა ალადინს, როცა ძვირფას სამოსში გამოაწყო. — ნამდვილ პრინცს ჰგავხარ. ახლა, ამ ახალი გარეგნობით, ჭაბუკი მზად იყო, იასმინისთვის სიყვარული აეხსნა. — აბა, ახლა შენ იცი! — შესძახა ჯინმა. — დაე, ნახონ აგრაბაჰელებმა, როგორია პრინცი ალი!
+            </p>
+            <p>
+              ქუჩა სავსე იყო პრინცის სანახავად გამოსული ხალხით.
+            </p>
+            <p>
+              — საუცხოოა! — აღფრთოვანდა <button type="button" class="vocab-word" data-word="მბრძანებელი">მბრძანებელი</button> ალადინის დანახვისას, რომელიც სატახტო დარბაზში მფრინავი ხალიჩით შემოფრინდა.
+            </p>
+            <p>
+              — თქვენო ბრწყინვალებავ! მე შორეული ქვეყნიდან მოვედი თქვენი ქალიშვილის ხელის სათხოვნელად, — მიმართა ალადინმა მბრძანებელს და თავი მდაბლად დაუკრა.
+            </p>
+            <p>
+              — შესანიშნავია! — შვებით ამოისუნთქა იასმინის მამამ. იფიქრა, ბოლოს და ბოლოს გამოჩნდა პრინცი, რომელიც ჩემს ასულს გადაარჩენსო.
+            </p>
+          </div>
+
+          <div class="pt-4 border-t border-gold/30 flex flex-wrap items-center justify-between gap-3">
+            <button type="button" data-read-btn="2" class="mark-read-btn inline-flex items-center gap-2 bg-turquoise hover:bg-turquoiseDark text-white font-bold px-5 py-3 rounded-2xl shadow transition">
+              <span>წავიკითხე ეს ნაწილი (+10 ქულა)</span>
+            </button>
+            <button type="button" data-next-tab="tab-3" class="next-tab-btn inline-flex items-center gap-2 bg-night hover:bg-nightLight text-goldBright font-bold px-5 py-3 rounded-2xl transition">
+              <span>შემდეგი ნაწილი →</span>
+            </button>
+          </div>
+        </article>
+
+        <!-- ნაწილი 3 -->
+        <article id="episode-3" role="tabpanel" aria-labelledby="tab-3" class="episode-panel hidden space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center bg-parchmentWarm p-4 sm:p-5 rounded-2xl border border-gold/30">
+            <div class="md:col-span-4 flex justify-center">
+              <!-- SVG ილუსტრაცია 3: ფრენა ვარსკვლავებიან ცაში -->
+              <svg viewBox="0 0 240 160" class="w-full max-w-[220px] h-auto rounded-xl" role="img" aria-label="მფრინავი ხალიჩა ვარსკვლავებით მოჭედილ ღამის ცაზე">
+                <rect width="240" height="160" rx="14" fill="#1A1B41"/>
+                <circle cx="45" cy="35" r="14" fill="#FDE047"/>
+                <circle cx="51" cy="31" r="12" fill="#1A1B41"/>
+                <circle cx="110" cy="28" r="2.5" fill="#FDE047"/>
+                <circle cx="155" cy="40" r="3" fill="#5EEAD4"/>
+                <circle cx="195" cy="25" r="2.5" fill="#FDE047"/>
+                <circle cx="205" cy="70" r="2" fill="#FFFFFF"/>
+                <!-- ღრუბლები -->
+                <ellipse cx="65" cy="128" rx="45" ry="14" fill="#282A5E"/>
+                <ellipse cx="170" cy="135" rx="50" ry="15" fill="#282A5E"/>
+                <!-- მფრინავი ხალიჩა -->
+                <path d="M55 95 Q120 75 185 88 L170 108 Q115 95 45 112 Z" fill="#008B8B" stroke="#F3B61F" stroke-width="3"/>
+                <path d="M68 97 Q120 82 172 92" fill="none" stroke="#FDE047" stroke-width="2" stroke-dasharray="4 4"/>
+              </svg>
+            </div>
+            <div class="md:col-span-8">
+              <span class="text-xs font-bold text-turquoiseDark uppercase">ეპიზოდი 3 / 3</span>
+              <h3 class="text-xl sm:text-2xl font-extrabold text-night mt-1">ფრენა მფრინავი ხალიჩით</h3>
+              <p class="text-sm text-slate-700 mt-2">
+                პრინცესა იასმინი ხალიჩაზე ავიდა და მეგობრები ვარსკვლავებით მოჭედილი ცისკენ გაფრინდნენ.
+              </p>
+            </div>
+          </div>
+
+          <div class="story-text font-serif text-lg leading-relaxed text-ink space-y-4">
+            <p>
+              მოგვიანებით პრინცად ქცეულმა ალადინმა იასმინი მოინახულა.
+            </p>
+            <p>
+              — ჩვენ, მგონი, სადღაც უკვე შევხვედრივართ ერთმანეთს... მოედანზე ხომ არა? — ჰკითხა ქალიშვილმა.
+            </p>
+            <p>
+              — არა, ეს შეუძლებელია! იქ ხომ მხოლოდ <button type="button" class="vocab-word" data-word="მდაბიო">მდაბიოები</button> დადიან! — იუკადრისა ალადინმა.
+            </p>
+            <p>
+              — შენც ისეთივე <button type="button" class="vocab-word" data-word="მედიდური">მედიდური</button> ხარ, როგორიც დანარჩენი პრინცები! — აღმოხდა იმედგაცრუებულ პრინცესას.
+            </p>
+            <p>
+              პრინც ალის ხმა ძალიან ჰგავდა იმ ვაჟის ხმას, რომელიც ბაზრის მოედანზე გაიცნო, მაგრამ იასმინის წყენამ მაშინვე გაუარა, როგორც კი ჭაბუკმა მფრინავი ხალიჩა აჩვენა.
+            </p>
+            <p>
+              — მენდობი? — ჰკითხა ალადინმა და ხალიჩაზე გვერდით მოისვა.
+            </p>
+            <p>
+              — რასაკვირველია! — უპასუხა ქალიშვილმა.
+            </p>
+            <p>
+              ხალიჩა აფრინდა, ქალაქ აგრაბაჰს გადაუქროლა და ღრუბლების თავზე მოექცა. ვარსკვლავებით <button type="button" class="vocab-word" data-word="მოჭედილი">მოჭედილი</button> ცა ერთი ხელის გაწვდენაზე იყო და გრძნობდნენ, ჩიტებივით თავისუფლები იყვნენ...
+            </p>
+          </div>
+
+          <div class="pt-4 border-t border-gold/30 flex flex-wrap items-center justify-between gap-3">
+            <button type="button" data-read-btn="3" class="mark-read-btn inline-flex items-center gap-2 bg-turquoise hover:bg-turquoiseDark text-white font-bold px-5 py-3 rounded-2xl shadow transition">
+              <span>წავიკითხე ეს ნაწილი (+10 ქულა)</span>
+            </button>
+            <a href="#vocabulary-section" class="inline-flex items-center gap-2 bg-goldBright hover:bg-gold text-night font-bold px-5 py-3 rounded-2xl transition">
+              <span>გადადი ლექსიკონზე ↓</span>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- სექცია 2: სიტყვების საგანძური (ლექსიკონი) -->
+    <section id="vocabulary-section" class="py-12 px-4 bg-parchmentWarm border-y border-gold/30">
+      <div class="max-w-5xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-night bg-goldBright/40 px-3 py-1 rounded-full">ნაბიჯი 2 • ლექსიკონი</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-night mt-2">სიტყვების საგანძური</h2>
+            <p class="text-sm sm:text-base text-slate-700 mt-1">
+              ზღაპარში შეხვდები საინტერესო სიტყვებს. გაეცანი მათ მარტივ ახსნასა და მაგალითებს.
+            </p>
+          </div>
+
+          <!-- ძიების ველი -->
+          <div class="w-full md:w-72">
+            <label for="vocab-search" class="sr-only">სიტყვის ძიება</label>
+            <div class="relative">
+              <input type="search" id="vocab-search" placeholder="მოძებნე სიტყვა..." class="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-parchment border-2 border-gold/50 focus:border-turquoise text-sm text-night" />
+              <svg class="w-5 h-5 text-slate-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- სიტყვების ბარათების ბადე -->
+        <div id="vocab-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- ივსება JavaScript-ით -->
+        </div>
+        <p id="vocab-empty-msg" class="hidden text-center text-slate-600 py-6 font-semibold">
+          მსგავსი სიტყვა ლექსიკონში ვერ მოიძებნა. სცადე სხვა სიტყვა.
+        </p>
+      </div>
+    </section>
+
+    <!-- სექცია 3: შეამოწმე ცოდნა (სახელმძღვანელოს 5 კითხვა) -->
+    <section id="quiz-section" class="py-12 px-4 max-w-4xl mx-auto">
+      <div class="mb-8">
+        <span class="text-xs font-bold uppercase tracking-wider text-turquoiseDark bg-turquoise/15 px-3 py-1 rounded-full">ნაბიჯი 3 • სავარჯიშო</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-night mt-2">შეამოწმე ცოდნა</h2>
+        <p class="text-sm sm:text-base text-slate-700 mt-1">
+          უპასუხე სახელმძღვანელოს კითხვებს. თუ გაგიჭირდება, გამოიყენე <strong>„მინიშნება“</strong>! თითოეული სწორი პასუხი <strong>+10 ქულას</strong> მოგიტანს.
+        </p>
+      </div>
+
+      <div id="quiz-container" class="space-y-6">
+        <!-- ივსება JavaScript-ით -->
+      </div>
+    </section>
+
+    <!-- სექცია 4: თამაში „დაალაგე ამბავი თანმიმდევრობით“ -->
+    <section id="game-section" class="py-12 px-4 bg-night text-white border-y-4 border-gold">
+      <div class="max-w-4xl mx-auto">
+        <div class="mb-6">
+          <span class="text-xs font-bold uppercase tracking-wider text-night bg-goldBright px-3 py-1 rounded-full">ნაბიჯი 4 • ინტერაქტიული თამაში</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-2">დაალაგე ამბავი თანმიმდევრობით</h2>
+          <p class="text-sm sm:text-base text-slate-200 mt-1">
+            დაალაგე მოვლენები სწორი თანმიმდევრობით (1-დან 5-მდე). შეგიძლია ბარათები გადაათრიო ან გამოიყენო <strong>▲ (ზემოთ)</strong> და <strong>▼ (ქვემოთ)</strong> ღილაკები.
+          </p>
+        </div>
+
+        <!-- ბარათების სია -->
+        <ol id="sequence-list" class="space-y-3" aria-label="მოვლენების თანმიმდევრობა">
+          <!-- ივსება JavaScript-ით -->
+        </ol>
+
+        <!-- თამაშის მართვის ღილაკები -->
+        <div class="mt-6 flex flex-wrap items-center gap-3">
+          <button type="button" id="check-sequence-btn" class="bg-goldBright hover:bg-gold text-night font-extrabold px-6 py-3 rounded-2xl shadow-lg transition">
+            შეამოწმე თანმიმდევრობა (+20 ქულა)
+          </button>
+          <button type="button" id="shuffle-sequence-btn" class="bg-nightLight hover:bg-white/15 border border-white/25 text-white font-semibold px-5 py-3 rounded-2xl transition">
+            თავიდან არევა
+          </button>
+        </div>
+
+        <!-- უკუკავშირის ბლოკი -->
+        <div id="sequence-feedback" class="hidden mt-5 p-4 rounded-2xl border-2 text-sm sm:text-base" role="status" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- სექცია 5: ჯადოსნური ნივთები და შენი ფანტაზია (მე-6 კითხვის მიხედვით) -->
+    <section id="creativity-section" class="py-12 px-4 max-w-5xl mx-auto">
+      <div class="mb-8">
+        <span class="text-xs font-bold uppercase tracking-wider text-night bg-goldBright/40 px-3 py-1 rounded-full">მე-6 კითხვა • შემოქმედებითი დაფა</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-night mt-2">ჯადოსნური ნივთები ზღაპრებიდან</h2>
+        <p class="text-sm sm:text-base text-slate-700 mt-1">
+          ზღაპარში ნახსენებია <strong>ჯადოსნური ლამპარი</strong> და <strong>მფრინავი ხალიჩა</strong>. კიდევ რომელ ჯადოსნურ ნივთზე გსმენია? დაათვალიერე ნიმუშები და დაამატე შენი ნივთიც!
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- ჯადოსნური ნივთების დაფა -->
+        <div class="lg:col-span-7">
+          <h3 class="text-lg font-bold text-night mb-3">ჯადოსნური ნივთების კოლექცია</h3>
+          <div id="magic-items-board" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- ივსება JavaScript-ით -->
+          </div>
+        </div>
+
+        <!-- მინი-ფორმა ახალი ჯადოსნური ნივთის დასამატებლად (პირადი მონაცემების გარეშე!) -->
+        <div class="lg:col-span-5 bg-parchment border-2 border-turquoise/50 rounded-3xl p-5 sm:p-6 shadow-lg">
+          <h3 class="text-lg font-extrabold text-night">დაამატე ჯადოსნური ნივთი</h3>
+          <p class="text-xs text-slate-600 mt-1 mb-4">
+            ჩაწერე რომელიმე ზღაპრული ნივთი და რას აკეთებს ის (პირადი მონაცემების ჩაწერა საჭირო არ არის).
+          </p>
+
+          <form id="magic-item-form" novalidate class="space-y-4">
+            <div>
+              <label for="magic-name" class="block text-sm font-bold text-night mb-1">
+                ჯადოსნური ნივთის სახელი <span class="text-red-700">*</span>
+              </label>
+              <input type="text" id="magic-name" name="magicName" maxlength="45" placeholder="მაგ.: უჩინმაჩინის ქუდი" class="w-full px-3.5 py-2.5 rounded-xl bg-white border-2 border-slate-300 focus:border-turquoise text-sm text-night" required />
+            </div>
+
+            <div>
+              <label for="magic-desc" class="block text-sm font-bold text-night mb-1">
+                რა ჯადოსნური თვისება აქვს? <span class="text-red-700">*</span>
+              </label>
+              <textarea id="magic-desc" name="magicDesc" rows="3" maxlength="160" placeholder="მაგ.: ვინც ამ ქუდს დაიხურავს, უჩინარი ხდება." class="w-full px-3.5 py-2.5 rounded-xl bg-white border-2 border-slate-300 focus:border-turquoise text-sm text-night" required></textarea>
+            </div>
+
+            <!-- ვალიდაციისა და წარმატების შეტყობინება -->
+            <div id="form-feedback" class="hidden p-3 rounded-xl text-xs sm:text-sm font-semibold" role="alert" aria-live="polite"></div>
+
+            <button type="submit" class="w-full bg-turquoise hover:bg-turquoiseDark text-white font-bold py-3 px-4 rounded-2xl shadow transition">
+              დაამატე დაფაზე
+            </button>
+          </form>
+
+          <p class="text-[11px] text-slate-500 mt-3">
+            შენიშვნა: დამატებული ბარათები ინახება მხოლოდ ამ მოწყობილობის ბრაუზერში.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ქვედა კოლონტიტული (Footer) -->
+  <footer class="bg-night text-slate-300 py-8 px-4 border-t-4 border-gold">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+      <div>
+        <p class="font-bold text-white text-sm sm:text-base">
+          ალადინი — ინტერაქტიული სასწავლო რესურსი
+        </p>
+        <p class="text-xs text-slate-400 mt-1">
+          წყარო: აღმოსავლური ზღაპარი „ალადინი“ (დაწყებითი საფეხურის სასკოლო საკითხავი მასალის მიხედვით).
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button type="button" id="reset-progress-btn" class="px-4 py-2 rounded-xl bg-nightLight hover:bg-red-900/60 border border-white/20 text-xs sm:text-sm text-slate-200 hover:text-white transition">
+          პროგრესის განულება
+        </button>
+      </div>
+    </div>
+
+    <!-- პროგრესის განულების დადასტურების პანელი (alert/confirm-ის ნაცვლად) -->
+    <div id="reset-confirm-bar" class="hidden max-w-xl mx-auto mt-4 bg-nightLight border border-goldBright rounded-2xl p-4 text-center" role="region" aria-live="polite">
+      <p class="text-sm text-white font-semibold mb-3">ნამდვილად გსურს ქულებისა და პროგრესის თავიდან დაწყება?</p>
+      <div class="flex justify-center gap-3">
+        <button type="button" id="confirm-reset-yes" class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-bold">
+          დიახ, გავანულოთ
+        </button>
+        <button type="button" id="confirm-reset-no" class="px-4 py-2 rounded-xl bg-slate-600 hover:bg-slate-500 text-white text-xs sm:text-sm font-bold">
+          გაუქმება
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript ლოგიკა -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      /* =====================================================================
+         1. მონაცემთა ბაზა (ლექსიკონი, კითხვები, თანმიმდევრობის თამაში, ნივთები)
+         ===================================================================== */
+
+      const VOCABULARY = [
+        {
+          word: 'ღარიბი',
+          meaning: 'ადამიანი, რომელსაც ცოტა ქონება და ფული აქვს.',
+          example: '„ალადინი ღარიბი, მაგრამ ძალიან გულკეთილი ბიჭი იყო.“'
+        },
+        {
+          word: 'ყაჩაღი',
+          meaning: 'ავაზაკი, ადამიანი, რომელიც სხვებს ძალით ართმევს ქონებას.',
+          example: '„ალადინმა ორმოცი ყაჩაღი მოხერხებულად გააბრიყვა.“'
+        },
+        {
+          word: 'სივიწროვე',
+          meaning: 'პატარა, ვიწრო ადგილი, სადაც თავისუფლად მოძრაობა ჭირს.',
+          example: '„ჯინს მობეზრდა ათასი წელი პატარა ლამპრის სივიწროვეში ყოფნა.“'
+        },
+        {
+          word: 'მკვიდრი',
+          meaning: 'ვინც სადმე მუდმივად ცხოვრობს ან ბინადრობს.',
+          example: '„ჯინმა თქვა, რომ ის ამ ლამპრის ერთადერთი მკვიდრი იყო.“'
+        },
+        {
+          word: 'ნიშნის მოგებით',
+          meaning: 'ეშმაკურად, გამოცდის ან გამარჯვების ტონით ნათქვამი.',
+          example: '„ალადინმა ნიშნის მოგებით სთხოვა ჯინს გამოქვაბულიდან ამოყვანა.“'
+        },
+        {
+          word: 'თავშესაფარი',
+          meaning: 'ადგილი, სადაც ადამიანი თავს აფარებს და მშვიდად ისვენებს.',
+          example: '„მეგობრები ხალიჩით თავშესაფრამდე მალე მიფრინდნენ.“'
+        },
+        {
+          word: 'გადასხვაფერდა',
+          meaning: 'სრულიად შეიცვალა გარეგნობა, სხვანაირი გახდა.',
+          example: '„ჯინის ჯადოქრობით ალადინი თავით ფეხებამდე გადასხვაფერდა.“'
+        },
+        {
+          word: 'მბრძანებელი',
+          meaning: 'ქვეყნის მმართველი, მეფე ან სულთანი.',
+          example: '„აგრაბაჰის მბრძანებელი აღფრთოვანდა პრინც ალის დანახვისას.“'
+        },
+        {
+          word: 'მდაბიო',
+          meaning: 'ძველ დროში ასე უწოდებდნენ უბრალო, არადიდგვაროვან ხალხს.',
+          example: '„პრინცად ქცეულმა ალადინმა იცრუა, მოედანზე მხოლოდ მდაბიოები დადიანო.“'
+        },
+        {
+          word: 'მედიდური',
+          meaning: 'ამაყი, ქედმაღალი, ვინც თავს სხვებზე მაღლა აყენებს.',
+          example: '„იასმინს ეწყინა და ალადინს მედიდური უწოდა.“'
+        },
+        {
+          word: 'მოჭედილი',
+          meaning: 'უხვად შემკული, მოფენილი (აქ: ვარსკვლავებით სავსე ცა).',
+          example: '„ღამით ცა კაშკაშა ვარსკვლავებით იყო მოჭედილი.“'
+        }
+      ];
+
+      // სახელმძღვანელოს პირველი 5 კითხვა
+      const QUIZ_QUESTIONS = [
+        {
+          id: 'q1',
+          question: '1. რა მოჰყვა ლამპრის ხეხვას?',
+          options: [
+            'ლამპარი გატყდა და ოქროს მონეტები გადმოიყარა.',
+            'ლამპარი აძაგძაგდა, კაშკაშა შუქი ამოიფრქვა და კვამლი ცისფერ ლანდად გადაიქცა.',
+            'გამოქვაბულის კარი თავისით გაიღო და ყაჩაღები შემოვიდნენ.'
+          ],
+          correctIndex: 1,
+          hint: 'გადაიკითხე ზღაპრის პირველი ნაწილის პირველივე აბზაცი.',
+          explanation: 'სწორია! როცა ალადინმა ლამპარს ხეხვა დაუწყო, ის აძაგძაგდა, კაშკაშა შუქი ამოიფრქვა და კვამლის ღრუბელი ცისფერ ლანდად (ჯინად) იქცა.'
+        },
+        {
+          id: 'q2',
+          question: '2. ვინ ყოფილა ლამპრიდან ამოსული არსება?',
+          options: [
+            'ამ ლამპრის ერთადერთი და უძლიერესი მკვიდრი — ჯინი, რომელიც სამ ნატვრას ასრულებს.',
+            'აგრაბაჰის მბრძანებლის მთავარი მრჩეველი.',
+            'გამოქვაბულის მცველი ჯადოსნური ფრინველი.'
+          ],
+          correctIndex: 0,
+          hint: 'ნახე, როგორ წარუდგინა თავი ცისფერმა ლანდმა ალადინს პირველ ნაწილში.',
+          explanation: 'ყოჩაღ! ცისფერმა ლანდმა უთხრა ალადინს: „მე ამ ლამპრის ერთადერთი და უძლიერესი მკვიდრი ვარ... ჩაიფიქრე სამი ნატვრა და შეგისრულებ“.'
+        },
+        {
+          id: 'q3',
+          question: '3. რა იყო ალადინის ყველაზე დიდი სურვილი?',
+          options: [
+            'მსოფლიოს ყველაზე დიდი სასახლის აშენება.',
+            'ორმოცი ყაჩაღის დამარცხება.',
+            'პრინცად გადაქცევა და მეფის ასულ იასმინის ცოლად შერთვა.'
+          ],
+          correctIndex: 2,
+          hint: 'გაიხსენე მეორე ნაწილი, როცა მეგობრებმა თავშესაფრამდე მიაღწიეს.',
+          explanation: 'ზუსტად! ალადინმა ჯინს უთხრა: „ყველაზე ძალიან რა მინდა? — პრინცი მინდა გავხდე და ცოლად იასმინი შევირთო“.'
+        },
+        {
+          id: 'q4',
+          question: '4. როგორ შეხვდნენ ალადინის გამოჩენას აგრაბაჰელები?',
+          options: [
+            'ქუჩა ხალხით გაივსო, მბრძანებელი კი აღფრთოვანდა და შვებით ამოისუნთქა.',
+            'ყველა შეშინდა და სახლებში დაიმალა.',
+            'არავის მიუქცევია ყურადღება პრინც ალისთვის.'
+          ],
+          correctIndex: 0,
+          hint: 'წაიკითხე მეორე ნაწილის ბოლო აბზაცები, როცა ალადინი სატახტო დარბაზში შეფრინდა.',
+          explanation: 'მართალია! ქუჩა სავსე იყო პრინცის სანახავად გამოსული ხალხით, მბრძანებელმა კი „საუცხოოა!“ წამოიძახა და შვებით ამოისუნთქა.'
+        },
+        {
+          id: 'q5',
+          question: '5. რომელ ფრაზაში ჩანს, რომ ალადინი და იასმინი თავს შესანიშნავად გრძნობდნენ?',
+          options: [
+            '„შენც ისეთივე მედიდური ხარ, როგორიც დანარჩენი პრინცები!“',
+            '„ვარსკვლავებით მოჭედილი ცა ერთი ხელის გაწვდენაზე იყო და გრძნობდნენ, ჩიტებივით თავისუფლები იყვნენ...“',
+            '„უჰ, რა საშინელებაა ათასი წელი ასეთ სივიწროვეში ყოფნა!“'
+          ],
+          correctIndex: 1,
+          hint: 'დააკვირდი ზღაპრის სულ ბოლო წინადადებას მესამე ნაწილში.',
+          explanation: 'შესანიშნავია! სწორედ ბოლო წინადადება გადმოსცემს მათ სიხარულსა და თავისუფლების განცდას ღრუბლებს ზემოთ ფრენისას.'
+        }
+      ];
+
+      // თანმიმდევრობით დასალაგებელი ამბავი (სწორი რიგი: 1 -> 5)
+      const CORRECT_SEQUENCE = [
+        { id: 's1', order: 1, text: 'ალადინმა გამოქვაბულში დამტვერილ ლამპარს ხეხვა დაუწყო და ჯინი გაათავისუფლა.' },
+        { id: 's2', order: 2, text: 'ჯინმა ალადინი გამოქვაბულიდან ამოიყვანა და მეგობრები აგრაბაჰისკენ გაფრინდნენ.' },
+        { id: 's3', order: 3, text: 'ალადინის სურვილით ჯინმა ის ძვირფას სამოსში გამოაწყო და პრინც ალად გადააქცია.' },
+        { id: 's4', order: 4, text: 'პრინცი ალი მფრინავი ხალიჩით სატახტო დარბაზში შეფრინდა და მბრძანებელი აღაფრთოვანა.' },
+        { id: 's5', order: 5, text: 'იასმინი ალადინს ხალიჩაზე გვერდით მოუჯდა და ორივემ ვარსკვლავებიან ცაში იფრინა.' }
+      ];
+
+      // საწყისი ჯადოსნური ნივთები (მე-6 კითხვისთვის)
+      const DEFAULT_MAGIC_ITEMS = [
+        {
+          name: 'ნატვრისთვალი',
+          desc: 'ქართული ზღაპრების ჯადოსნური ქვა, რომელიც კეთილ გმირებს სურვილებს უსრულებს.',
+          isCustom: false
+        },
+        {
+          name: 'უჩინმაჩინის ქუდი',
+          desc: 'ვინც ამ ქუდს დაიხურავს, უხილავი ხდება და შეუმჩნევლად გადაადგილდება.',
+          isCustom: false
+        },
+        {
+          name: 'ჯადოსნური სარკე',
+          desc: 'სარკე, რომელიც სიმართლეს ამბობს და შორეულ ამბებს აჩვენებს.',
+          isCustom: false
+        },
+        {
+          name: 'მფრინავი ხალიჩა',
+          desc: 'აღმოსავლური ზღაპრის ხალიჩა, რომელსაც მგზავრების ღრუბლებს ზემოთ გადაყვანა შეუძლია.',
+          isCustom: false
+        }
+      ];
+
+      /* =====================================================================
+         2. მდგომარეობის მართვა (localStorage)
+         ===================================================================== */
+      const STORAGE_KEY = 'aladini_edu_progress_v1';
+
+      let state = {
+        readEpisodes: [],      // ['1', '2', '3']
+        solvedQuestions: [],   // ['q1', 'q2', ...]
+        sequenceSolved: false, // true / false
+        customMagicItems: [],  // [{ name, desc, isCustom: true }]
+        fontScale: 1           // 0.9, 1, 1.15, 1.3
+      };
+
+      function loadState() {
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            state = { ...state, ...parsed };
+          }
+        } catch (err) {
+          console.warn('პროგრესის წაკითხვა ვერ მოხერხდა:', err);
+        }
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (err) {
+          console.warn('პროგრესის შენახვა ვერ მოხერხდა:', err);
+        }
+      }
+
+      function calculateScore() {
+        const readPts = state.readEpisodes.length * 10;       // მაქს. 30
+        const quizPts = state.solvedQuestions.length * 10;    // მაქს. 50
+        const gamePts = state.sequenceSolved ? 20 : 0;        // მაქს. 20
+        return Math.min(100, readPts + quizPts + gamePts);
+      }
+
+      function updateScoreUI() {
+        const score = calculateScore();
+        document.getElementById('total-score').textContent = score;
+        document.getElementById('progress-percent').textContent = `${score}%`;
+        document.getElementById('progress-bar-fill').style.width = `${score}%`;
+        document.getElementById('progress-bar-container').setAttribute('aria-valuenow', score);
+
+        // წაკითხვის ღილაკების განახლება
+        document.querySelectorAll('.mark-read-btn').forEach(btn => {
+          const epId = btn.getAttribute('data-read-btn');
+          if (state.readEpisodes.includes(epId)) {
+            btn.classList.remove('bg-turquoise', 'hover:bg-turquoiseDark');
+            btn.classList.add('bg-emerald-700', 'cursor-default');
+            btn.innerHTML = '<span>✓ წაკითხულია (+10 ქულა)</span>';
+          } else {
+            btn.classList.add('bg-turquoise', 'hover:bg-turquoiseDark');
+            btn.classList.remove('bg-emerald-700', 'cursor-default');
+            btn.innerHTML = '<span>წავიკითხე ეს ნაწილი (+10 ქულა)</span>';
+          }
+        });
+      }
+
+      loadState();
+
+      /* =====================================================================
+         3. ნავიგაცია და შრიფტის რეგულატორი
+         ===================================================================== */
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const mainNav = document.getElementById('main-nav');
+
+      mobileMenuBtn.addEventListener('click', () => {
+        const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+        mobileMenuBtn.setAttribute('aria-expanded', String(!isExpanded));
+        mainNav.classList.toggle('hidden');
+        mainNav.classList.toggle('flex');
+      });
+
+      // მობილურზე ბმულზე დაჭერისას მენიუს დახურვა
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+          if (window.innerWidth < 768) {
+            mainNav.classList.add('hidden');
+            mainNav.classList.remove('flex');
+            mobileMenuBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+
+      // შრიფტის ზომის შეცვლა ზღაპრის ტექსტისთვის
+      function applyFontScale() {
+        const baseRem = 1.125; // text-lg = 1.125rem
+        document.querySelectorAll('.story-text').forEach(el => {
+          el.style.fontSize = `${(baseRem * state.fontScale).toFixed(2)}rem`;
+        });
+      }
+
+      document.getElementById('font-increase').addEventListener('click', () => {
+        if (state.fontScale < 1.35) {
+          state.fontScale = Number((state.fontScale + 0.12).toFixed(2));
+          applyFontScale();
+          saveState();
+        }
+      });
+
+      document.getElementById('font-decrease').addEventListener('click', () => {
+        if (state.fontScale > 0.85) {
+          state.fontScale = Number((state.fontScale - 0.12).toFixed(2));
+          applyFontScale();
+          saveState();
+        }
+      });
+
+      document.getElementById('font-reset').addEventListener('click', () => {
+        state.fontScale = 1;
+        applyFontScale();
+        saveState();
+      });
+
+      applyFontScale();
+
+      /* =====================================================================
+         4. ზღაპრის ეპიზოდები და ინტერაქტიული ლექსიკონი
+         ===================================================================== */
+      const tabs = document.querySelectorAll('.episode-tab');
+      const panels = document.querySelectorAll('.episode-panel');
+
+      function activateTab(tabId) {
+        tabs.forEach(t => {
+          const isTarget = t.id === tabId;
+          t.setAttribute('aria-selected', String(isTarget));
+          if (isTarget) {
+            t.classList.add('bg-night', 'text-goldBright', 'border-night', 'shadow-md');
+            t.classList.remove('bg-parchment', 'text-night', 'border-gold/40');
+          } else {
+            t.classList.remove('bg-night', 'text-goldBright', 'border-night', 'shadow-md');
+            t.classList.add('bg-parchment', 'text-night', 'border-gold/40');
+          }
+        });
+
+        panels.forEach(panel => {
+          const controlledBy = panel.getAttribute('aria-labelledby');
+          if (controlledBy === tabId) {
+            panel.classList.remove('hidden');
+          } else {
+            panel.classList.add('hidden');
+          }
+        });
+      }
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => activateTab(tab.id));
+      });
+
+      document.querySelectorAll('.next-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const nextId = btn.getAttribute('data-next-tab');
+          activateTab(nextId);
+          document.getElementById('story-section').scrollIntoView({ behavior: 'smooth' });
+        });
+      });
+
+      // ეპიზოდის წაკითხულად მონიშვნა
+      document.querySelectorAll('.mark-read-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const epId = btn.getAttribute('data-read-btn');
+          if (!state.readEpisodes.includes(epId)) {
+            state.readEpisodes.push(epId);
+            saveState();
+            updateScoreUI();
+          }
+        });
+      });
+
+      // ტექსტში გამოყოფილ სიტყვებზე დაწკაპუნება
+      const popupBox = document.getElementById('word-popup-box');
+      const popupTitle = document.getElementById('popup-word-title');
+      const popupMeaning = document.getElementById('popup-word-meaning');
+      const popupExample = document.getElementById('popup-word-example');
+
+      document.querySelectorAll('.vocab-word').forEach(wordBtn => {
+        wordBtn.addEventListener('click', () => {
+          const targetWord = wordBtn.getAttribute('data-word');
+          const entry = VOCABULARY.find(v => v.word === targetWord);
+          if (entry) {
+            popupTitle.textContent = entry.word;
+            popupMeaning.textContent = entry.meaning;
+            popupExample.textContent = `მაგალითი: ${entry.example}`;
+            popupBox.classList.remove('hidden');
+            popupBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        });
+      });
+
+      document.getElementById('close-word-popup').addEventListener('click', () => {
+        popupBox.classList.add('hidden');
+      });
+
+      // ლექსიკონის ბარათების რენდერი და ძიება
+      const vocabGrid = document.getElementById('vocab-grid');
+      const vocabEmptyMsg = document.getElementById('vocab-empty-msg');
+      const vocabSearchInput = document.getElementById('vocab-search');
+
+      function renderVocabulary(filterText = '') {
+        const query = filterText.trim().toLowerCase();
+        const filtered = VOCABULARY.filter(item =>
+          item.word.toLowerCase().includes(query) ||
+          item.meaning.toLowerCase().includes(query)
+        );
+
+        vocabGrid.innerHTML = '';
+        if (filtered.length === 0) {
+          vocabEmptyMsg.classList.remove('hidden');
+          return;
+        }
+        vocabEmptyMsg.classList.add('hidden');
+
+        filtered.forEach(item => {
+          const card = document.createElement('article');
+          card.className = 'bg-parchment border-2 border-gold/40 rounded-2xl p-5 shadow-sm flex flex-col justify-between';
+          card.innerHTML = `
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <h3 class="text-lg font-extrabold text-turquoiseDark">${item.word}</h3>
+                <span class="text-gold text-sm" aria-hidden="true">✦</span>
+              </div>
+              <p class="text-sm text-ink leading-relaxed">${item.meaning}</p>
+            </div>
+            <p class="mt-3 pt-2.5 border-t border-gold/25 text-xs text-slate-700 italic">
+              ${item.example}
+            </p>
+          `;
+          vocabGrid.appendChild(card);
+        });
+      }
+
+      vocabSearchInput.addEventListener('input', (e) => {
+        renderVocabulary(e.target.value);
+      });
+
+      renderVocabulary();
+
+      /* =====================================================================
+         5. შეამოწმე ცოდნა (5 ინტერაქტიული კითხვა)
+         ===================================================================== */
+      const quizContainer = document.getElementById('quiz-container');
+
+      function renderQuiz() {
+        quizContainer.innerHTML = '';
+
+        QUIZ_QUESTIONS.forEach((q) => {
+          const isAlreadySolved = state.solvedQuestions.includes(q.id);
+
+          const card = document.createElement('div');
+          card.className = 'bg-parchment border-2 border-gold/50 rounded-3xl p-5 sm:p-6 shadow-md';
+          card.id = `card-${q.id}`;
+
+          const optionsHtml = q.options.map((opt, idx) => `
+            <button type="button"
+              data-q="${q.id}"
+              data-idx="${idx}"
+              class="quiz-option w-full text-left p-3.5 sm:p-4 rounded-2xl border-2 border-slate-300 bg-white hover:border-turquoise hover:bg-teal-50/50 text-sm sm:text-base font-medium text-ink transition flex items-start gap-3">
+              <span class="w-7 h-7 rounded-full bg-parchmentWarm border border-gold/50 text-night font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                ${['ა', 'ბ', 'გ'][idx]}
+              </span>
+              <span>${opt}</span>
+            </button>
+          `).join('');
+
+          card.innerHTML = `
+            <div class="flex flex-wrap items-start justify-between gap-2 mb-4">
+              <h3 class="text-base sm:text-lg font-extrabold text-night">${q.question}</h3>
+              <span id="badge-${q.id}" class="text-xs font-bold px-3 py-1 rounded-full ${isAlreadySolved ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-700'}">
+                ${isAlreadySolved ? '✓ შესრულებულია (+10)' : '10 ქულა'}
+              </span>
+            </div>
+
+            <div class="space-y-2.5" role="group" aria-label="${q.question}">
+              ${optionsHtml}
+            </div>
+
+            <div class="mt-4 flex flex-wrap items-center gap-3">
+              <button type="button" data-hint-q="${q.id}" class="hint-btn text-xs sm:text-sm font-bold text-turquoiseDark hover:text-night underline underline-offset-4">
+                💡 მინიშნება
+              </button>
+              <button type="button" data-retry-q="${q.id}" class="retry-btn hidden text-xs sm:text-sm font-bold text-gold hover:text-night underline underline-offset-4">
+                ↻ ხელახლა ცდა
+              </button>
+            </div>
+
+            <div id="hint-box-${q.id}" class="hidden mt-3 p-3 rounded-xl bg-amber-50 border border-amber-300 text-xs sm:text-sm text-amber-950">
+              <strong>მინიშნება:</strong> ${q.hint}
+            </div>
+
+            <div id="feedback-${q.id}" class="hidden mt-3 p-3.5 rounded-xl border text-xs sm:text-sm font-medium" role="status" aria-live="polite"></div>
+          `;
+
+          quizContainer.appendChild(card);
+
+          // თუ უკვე ამოხსნილია წინა სესიიდან, ვაჩვენოთ სწორი მდგომარეობა
+          if (isAlreadySolved) {
+            const buttons = card.querySelectorAll('.quiz-option');
+            buttons.forEach((btn, idx) => {
+              btn.disabled = true;
+              if (idx === q.correctIndex) {
+                btn.classList.remove('border-slate-300', 'bg-white');
+                btn.classList.add('border-emerald-600', 'bg-emerald-50', 'text-emerald-950', 'font-bold');
+              }
+            });
+            const fb = card.querySelector(`#feedback-${q.id}`);
+            fb.classList.remove('hidden');
+            fb.classList.add('bg-emerald-50', 'border-emerald-400', 'text-emerald-950');
+            fb.textContent = q.explanation;
+          }
+        });
+
+        // პასუხის არჩევის მსმენელები
+        quizContainer.querySelectorAll('.quiz-option').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const qId = btn.getAttribute('data-q');
+            const chosenIdx = Number(btn.getAttribute('data-idx'));
+            const qObj = QUIZ_QUESTIONS.find(item => item.id === qId);
+            const card = document.getElementById(`card-${qId}`);
+            const allOpts = card.querySelectorAll('.quiz-option');
+            const feedbackEl = document.getElementById(`feedback-${qId}`);
+            const retryBtn = card.querySelector(`.retry-btn`);
+
+            allOpts.forEach(b => (b.disabled = true));
+            feedbackEl.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-400', 'text-emerald-950', 'bg-rose-50', 'border-rose-400', 'text-rose-950');
+
+            if (chosenIdx === qObj.correctIndex) {
+              btn.classList.remove('border-slate-300', 'bg-white');
+              btn.classList.add('border-emerald-600', 'bg-emerald-50', 'text-emerald-950', 'font-bold');
+
+              feedbackEl.classList.add('bg-emerald-50', 'border-emerald-400', 'text-emerald-950');
+              feedbackEl.innerHTML = `<strong>სწორია!</strong> ${qObj.explanation}`;
+              retryBtn.classList.add('hidden');
+
+              if (!state.solvedQuestions.includes(qId)) {
+                state.solvedQuestions.push(qId);
+                saveState();
+                updateScoreUI();
+              }
+              const badge = document.getElementById(`badge-${qId}`);
+              badge.className = 'text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800';
+              badge.textContent = '✓ შესრულებულია (+10)';
+            } else {
+              btn.classList.remove('border-slate-300', 'bg-white');
+              btn.classList.add('border-rose-600', 'bg-rose-50', 'text-rose-950');
+
+              feedbackEl.classList.add('bg-rose-50', 'border-rose-400', 'text-rose-950');
+              feedbackEl.innerHTML = `<strong>არ არის სწორი.</strong> სცადე კიდევ ერთხელ ან ნახე მინიშნება!`;
+              retryBtn.classList.remove('hidden');
+            }
+          });
+        });
+
+        // მინიშნების ღილაკები
+        quizContainer.querySelectorAll('.hint-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const qId = btn.getAttribute('data-hint-q');
+            document.getElementById(`hint-box-${qId}`).classList.toggle('hidden');
+          });
+        });
+
+        // ხელახლა ცდის ღილაკები
+        quizContainer.querySelectorAll('.retry-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const qId = btn.getAttribute('data-retry-q');
+            const card = document.getElementById(`card-${qId}`);
+            card.querySelectorAll('.quiz-option').forEach(opt => {
+              opt.disabled = false;
+              opt.className = 'quiz-option w-full text-left p-3.5 sm:p-4 rounded-2xl border-2 border-slate-300 bg-white hover:border-turquoise hover:bg-teal-50/50 text-sm sm:text-base font-medium text-ink transition flex items-start gap-3';
+            });
+            document.getElementById(`feedback-${qId}`).classList.add('hidden');
+            btn.classList.add('hidden');
+          });
+        });
+      }
+
+      renderQuiz();
+
+      /* =====================================================================
+         6. თამაში: „დაალაგე ამბავი თანმიმდევრობით“ (Drag & Drop + ღილაკები)
+         ===================================================================== */
+      const sequenceList = document.getElementById('sequence-list');
+      const sequenceFeedback = document.getElementById('sequence-feedback');
+      let currentSequence = [];
+      let draggedIndex = null;
+
+      function shuffleArray(arr) {
+        const copy = [...arr];
+        for (let i = copy.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        // დავრწმუნდეთ, რომ თავიდანვე სრულად დალაგებული არ ამოვიდეს
+        const isAlreadySorted = copy.every((item, idx) => item.order === idx + 1);
+        if (isAlreadySorted && copy.length > 1) {
+          [copy[0], copy[1]] = [copy[1], copy[0]];
+        }
+        return copy;
+      }
+
+      function initSequenceGame() {
+        currentSequence = state.sequenceSolved
+          ? [...CORRECT_SEQUENCE]
+          : shuffleArray(CORRECT_SEQUENCE);
+        renderSequenceList();
+      }
+
+      function moveSequenceItem(fromIdx, toIdx) {
+        if (toIdx < 0 || toIdx >= currentSequence.length) return;
+        const [moved] = currentSequence.splice(fromIdx, 1);
+        currentSequence.splice(toIdx, 0, moved);
+        renderSequenceList();
+      }
+
+      function renderSequenceList() {
+        sequenceList.innerHTML = '';
+
+        currentSequence.forEach((item, index) => {
+          const li = document.createElement('li');
+          li.className = 'order-card bg-nightLight border-2 border-white/20 hover:border-goldBright rounded-2xl p-3.5 sm:p-4 flex items-center justify-between gap-3 cursor-grab active:cursor-grabbing transition';
+          li.setAttribute('draggable', 'true');
+          li.dataset.index = index;
+
+          li.innerHTML = `
+            <div class="flex items-center gap-3.5">
+              <span class="w-8 h-8 rounded-xl bg-goldBright text-night font-extrabold text-sm flex items-center justify-center shrink-0" aria-hidden="true">
+                ${index + 1}
+              </span>
+              <span class="text-sm sm:text-base text-white leading-snug">${item.text}</span>
+            </div>
+
+            <!-- ხელმისაწვდომი ღილაკები შეხებისა და კლავიატურისთვის -->
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button type="button"
+                class="move-up-btn p-2.5 rounded-xl bg-night hover:bg-turquoise text-white disabled:opacity-30 disabled:pointer-events-none transition"
+                aria-label="ბარათის ზემოთ აწევა"
+                ${index === 0 ? 'disabled' : ''}>
+                ▲
+              </button>
+              <button type="button"
+                class="move-down-btn p-2.5 rounded-xl bg-night hover:bg-turquoise text-white disabled:opacity-30 disabled:pointer-events-none transition"
+                aria-label="ბარათის ქვემოთ ჩამოწევა"
+                ${index === currentSequence.length - 1 ? 'disabled' : ''}>
+                ▼
+              </button>
+            </div>
+          `;
+
+          // ღილაკებით გადაადგილება
+          li.querySelector('.move-up-btn').addEventListener('click', () => moveSequenceItem(index, index - 1));
+          li.querySelector('.move-down-btn').addEventListener('click', () => moveSequenceItem(index, index + 1));
+
+          // Drag & Drop მოვლენები
+          li.addEventListener('dragstart', () => {
+            draggedIndex = index;
+            li.classList.add('dragging');
+          });
+
+          li.addEventListener('dragend', () => {
+            li.classList.remove('dragging');
+            draggedIndex = null;
+          });
+
+          li.addEventListener('dragover', (e) => {
+            e.preventDefault();
+          });
+
+          li.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (draggedIndex !== null && draggedIndex !== index) {
+              moveSequenceItem(draggedIndex, index);
+            }
+          });
+
+          sequenceList.appendChild(li);
+        });
+      }
+
+      document.getElementById('check-sequence-btn').addEventListener('click', () => {
+        let correctCount = 0;
+        currentSequence.forEach((item, idx) => {
+          if (item.order === idx + 1) correctCount++;
+        });
+
+        sequenceFeedback.classList.remove('hidden', 'bg-emerald-950/90', 'border-emerald-400', 'text-emerald-100', 'bg-amber-950/90', 'border-amber-400', 'text-amber-100');
+
+        if (correctCount === CORRECT_SEQUENCE.length) {
+          sequenceFeedback.classList.add('bg-emerald-950/90', 'border-emerald-400', 'text-emerald-100');
+          sequenceFeedback.innerHTML = '<strong>შესანიშნავია!</strong> ზღაპრის ხუთივე ეპიზოდი სწორი თანმიმდევრობით დაალაგე!';
+          if (!state.sequenceSolved) {
+            state.sequenceSolved = true;
+            saveState();
+            updateScoreUI();
+          }
+        } else {
+          sequenceFeedback.classList.add('bg-amber-950/90', 'border-amber-400', 'text-amber-100');
+          sequenceFeedback.innerHTML = `<strong>სწორ ადგილას დგას ${correctCount} ბარათი 5-დან.</strong> გადახედე მოვლენებს: ჯერ გამოქვაბული და ლამპარია, შემდეგ პრინცად გადაქცევა, ბოლოს კი იასმინთან ერთად ფრენა.`;
+        }
+      });
+
+      document.getElementById('shuffle-sequence-btn').addEventListener('click', () => {
+        currentSequence = shuffleArray(CORRECT_SEQUENCE);
+        renderSequenceList();
+        sequenceFeedback.classList.add('hidden');
+      });
+
+      initSequenceGame();
+
+      /* =====================================================================
+         7. ჯადოსნური ნივთები და ფორმის ვალიდაცია (მე-6 კითხვა)
+         ===================================================================== */
+      const magicBoard = document.getElementById('magic-items-board');
+      const magicForm = document.getElementById('magic-item-form');
+      const formFeedback = document.getElementById('form-feedback');
+
+      function renderMagicItems() {
+        const allItems = [...DEFAULT_MAGIC_ITEMS, ...state.customMagicItems];
+        magicBoard.innerHTML = '';
+
+        allItems.forEach((item, idx) => {
+          const card = document.createElement('article');
+          card.className = `rounded-2xl p-4 border-2 shadow-sm flex flex-col justify-between ${
+            item.isCustom
+              ? 'bg-teal-50 border-turquoise'
+              : 'bg-parchment border-gold/40'
+          }`;
+
+          card.innerHTML = `
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-1.5">
+                <h4 class="font-extrabold text-night text-base">${item.name}</h4>
+                <span class="text-xs font-bold px-2 py-0.5 rounded-full ${
+                  item.isCustom ? 'bg-turquoise text-white' : 'bg-goldBright/40 text-night'
+                }">
+                  ${item.isCustom ? 'შენი დამატებული' : 'ზღაპრული'}
+                </span>
+              </div>
+              <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${item.desc}</p>
+            </div>
+          `;
+
+          if (item.isCustom) {
+            const customIdx = idx - DEFAULT_MAGIC_ITEMS.length;
+            const delBtn = document.createElement('button');
+            delBtn.type = 'button';
+            delBtn.className = 'mt-3 self-start text-xs font-semibold text-rose-700 hover:underline';
+            delBtn.textContent = 'წაშლა';
+            delBtn.addEventListener('click', () => {
+              state.customMagicItems.splice(customIdx, 1);
+              saveState();
+              renderMagicItems();
+            });
+            card.appendChild(delBtn);
+          }
+
+          magicBoard.appendChild(card);
+        });
+      }
+
+      magicForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const nameInput = document.getElementById('magic-name');
+        const descInput = document.getElementById('magic-desc');
+
+        const nameVal = nameInput.value.trim();
+        const descVal = descInput.value.trim();
+
+        formFeedback.classList.remove('hidden', 'bg-rose-100', 'text-rose-900', 'border', 'border-rose-300', 'bg-emerald-100', 'text-emerald-900', 'border-emerald-300');
+
+        if (nameVal.length < 3) {
+          formFeedback.classList.add('bg-rose-100', 'text-rose-900', 'border', 'border-rose-300');
+          formFeedback.textContent = 'გთხოვ ჩაწერო ჯადოსნური ნივთის სახელი (მინიმუმ 3 ასო).';
+          nameInput.focus();
+          return;
+        }
+
+        if (descVal.length < 6) {
+          formFeedback.classList.add('bg-rose-100', 'text-rose-900', 'border', 'border-rose-300');
+          formFeedback.textContent = 'გთხოვ მოკლედ აღწერო, რას აკეთებს ეს ნივთი (მინიმუმ 6 ასო).';
+          descInput.focus();
+          return;
+        }
+
+        state.customMagicItems.push({
+          name: nameVal,
+          desc: descVal,
+          isCustom: true
+        });
+        saveState();
+        renderMagicItems();
+
+        formFeedback.classList.add('bg-emerald-100', 'text-emerald-900', 'border', 'border-emerald-300');
+        formFeedback.textContent = `ყოჩაღ! „${nameVal}“ წარმატებით დაემატა ჯადოსნური ნივთების დაფაზე.`;
+
+        nameInput.value = '';
+        descInput.value = '';
+      });
+
+      renderMagicItems();
+
+      /* =====================================================================
+         8. პროგრესის განულება (უსაფრთხო დადასტურებით)
+         ===================================================================== */
+      const resetProgressBtn = document.getElementById('reset-progress-btn');
+      const resetConfirmBar = document.getElementById('reset-confirm-bar');
+
+      resetProgressBtn.addEventListener('click', () => {
+        resetConfirmBar.classList.remove('hidden');
+        resetConfirmBar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+
+      document.getElementById('confirm-reset-no').addEventListener('click', () => {
+        resetConfirmBar.classList.add('hidden');
+      });
+
+      document.getElementById('confirm-reset-yes').addEventListener('click', () => {
+        state = {
+          readEpisodes: [],
+          solvedQuestions: [],
+          sequenceSolved: false,
+          customMagicItems: [],
+          fontScale: 1
+        };
+        saveState();
+        applyFontScale();
+        updateScoreUI();
+        renderQuiz();
+        initSequenceGame();
+        renderMagicItems();
+        sequenceFeedback.classList.add('hidden');
+        resetConfirmBar.classList.add('hidden');
+      });
+
+      // საწყისი UI-ს განახლება
+      updateScoreUI();
+    });
+  </script>
+</body>
+</html>
